@@ -1,4 +1,5 @@
 "use client";
+import { useState } from "react";
 import useSWR from "swr";
 import { format } from "date-fns";
 import {
@@ -19,7 +20,8 @@ interface ReportMonth {
 }
 
 export default function ReportsPage() {
-  const { data: reports, isLoading } = useSWR<ReportMonth[]>("/api/reports?months=6", fetcher);
+  const [months, setMonths] = useState(3);
+  const { data: reports, isLoading } = useSWR<ReportMonth[]>(`/api/reports?months=${months}`, fetcher);
 
   if (isLoading) {
     return <div className="space-y-4">{Array(3).fill(0).map((_, i) => <div key={i} className="skeleton h-40 rounded-xl" />)}</div>;
@@ -43,9 +45,20 @@ export default function ReportsPage() {
 
   return (
     <div className="space-y-5 animate-fade-in-up">
-      <div>
-        <h1 className="text-lg font-bold text-[#F8FAFC] tracking-wide uppercase">Monthly Reports</h1>
-        <div className="text-xs text-[#64748B] mt-0.5">6-month historical view</div>
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+        <div>
+          <h1 className="text-lg font-bold text-[#F8FAFC] tracking-wide uppercase">Monthly Reports</h1>
+          <div className="text-xs text-[#64748B] mt-0.5">Historical financial analysis</div>
+        </div>
+        <select 
+          className="select-field w-full sm:w-40" 
+          value={months}
+          onChange={(e) => setMonths(Number(e.target.value))}
+        >
+          <option value={3}>Last 3 Months</option>
+          <option value={6}>Last 6 Months</option>
+          <option value={12}>Last 12 Months</option>
+        </select>
       </div>
 
       {/* Current month summary */}
@@ -88,7 +101,7 @@ export default function ReportsPage() {
 
       {/* Income vs Expenses chart */}
       <div className="card">
-        <div className="stat-label mb-4">INCOME vs EXPENSES (6 Months)</div>
+        <div className="stat-label mb-4">INCOME vs EXPENSES ({months} Months)</div>
         <ResponsiveContainer width="100%" height={240}>
           <BarChart data={chartData} barCategoryGap="30%">
             <CartesianGrid strokeDasharray="3 3" stroke="rgba(255,255,255,0.05)" />
