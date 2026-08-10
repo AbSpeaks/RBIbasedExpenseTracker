@@ -15,14 +15,37 @@ const playfair = Playfair_Display({
 });
 
 export const metadata: Metadata = {
-  title: "ABIN GOVERNMENT | Financial OS",
+  title: "RESERVE BANK OF ABIN | Financial OS",
   description: "Personal Financial Operating System - RBI Grade",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    title: "RBI OS",
+    statusBarStyle: "black-translucent",
+  },
+};
+
+export const viewport = {
+  themeColor: "#070D19",
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false, // Prevents zooming on mobile
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body className={`${inter.variable} ${playfair.variable} antialiased`}>
+        <script dangerouslySetInnerHTML={{
+          __html: `
+            if ('serviceWorker' in navigator) {
+              window.addEventListener('load', function() {
+                navigator.serviceWorker.register('/sw.js');
+              });
+            }
+          `
+        }} />
         <ToastProvider>
           <div className="flex min-h-screen">
             <Sidebar />
