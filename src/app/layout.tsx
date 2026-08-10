@@ -14,6 +14,8 @@ const playfair = Playfair_Display({
   variable: "--font-playfair", 
 });
 
+import VoiceRecorder from "@/components/VoiceRecorder";
+
 export const metadata: Metadata = {
   title: "RESERVE BANK OF ABIN | Financial OS",
   description: "Personal Financial Operating System - RBI Grade",
@@ -53,6 +55,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               <div className="max-w-7xl mx-auto">{children}</div>
             </main>
           </div>
+          <VoiceRecorder />
         </ToastProvider>
       </body>
     </html>
