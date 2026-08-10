@@ -295,16 +295,18 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 animate-fade-in-up">
       {/* Header */}
-      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-        <div>
-          <div className="flex items-center gap-2 mb-1">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
+        <div className="flex flex-col gap-1.5">
+          <div className="flex flex-wrap items-center gap-2">
             <span className="text-xl">🏛️</span>
-            <h1 className="font-serif text-2xl font-bold text-[#F8FAFC] tracking-wide">RESERVE BANK OF ABIN</h1>
-            <span className="badge-rbi">Fiscal Control Center</span>
+            <h1 className="font-serif text-xl md:text-2xl font-bold text-[#F8FAFC] tracking-wide">RESERVE BANK OF ABIN</h1>
           </div>
-          <div className="text-xs text-[#64748B]">{dateStr} · {monthStr}</div>
+          <div className="flex flex-wrap items-center gap-2">
+            <span className="badge-rbi text-[10px] px-1.5 py-0.5">Fiscal Control Center</span>
+            <span className="text-xs text-[#64748B]">{dateStr} · {monthStr}</span>
+          </div>
         </div>
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
           {user?.lowIncomeMode && (
             <div className="badge-watch">⚠️ LOW-INCOME MODE</div>
           )}

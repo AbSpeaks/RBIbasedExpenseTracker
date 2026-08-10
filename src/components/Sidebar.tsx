@@ -62,22 +62,24 @@ export default function Sidebar() {
       </div>
 
       {/* Mobile Nav */}
-      <div className="mobile-nav fixed bottom-0 left-0 right-0 h-16 bg-[#070D19] border-t border-[#1E2D4A] flex items-center justify-around px-2 z-40 md:hidden">
-        {nav.slice(0, 5).map((item) => {
-          const active = p === item.href;
-          return (
-            <Link 
-              key={item.n} 
-              href={item.href}
-              className={`flex flex-col items-center justify-center w-full h-full gap-1 transition-colors ${
-                active ? "text-[#D4AF37]" : "text-[#64748B]"
-              }`}
-            >
-              {item.i}
-              <span className="text-[9px] font-medium">{item.n.split(' ')[0]}</span>
-            </Link>
-          );
-        })}
+      <div className="mobile-nav fixed bottom-0 left-0 right-0 h-16 bg-[#070D19] border-t border-[#1E2D4A] flex items-center overflow-x-auto hide-scrollbar z-40 md:hidden pb-safe">
+        <div className="flex items-center min-w-full px-2">
+          {nav.map((item) => {
+            const active = p === item.href;
+            return (
+              <Link 
+                key={item.n} 
+                href={item.href}
+                className={`flex flex-col items-center justify-center min-w-[72px] h-14 gap-1 transition-colors rounded-lg ${
+                  active ? "text-[#D4AF37] bg-[#1E3A8A]/10" : "text-[#64748B] hover:text-[#F8FAFC]"
+                }`}
+              >
+                {item.i}
+                <span className="text-[10px] font-medium whitespace-nowrap">{item.n.split(' ')[0]}</span>
+              </Link>
+            );
+          })}
+        </div>
       </div>
     </>
   );
