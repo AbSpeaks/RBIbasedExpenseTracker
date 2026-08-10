@@ -85,7 +85,7 @@ function TransactionForm({
       {/* Type selector */}
       <div>
         <label className="stat-label block mb-2">TRANSACTION TYPE</label>
-        <div className="grid grid-cols-3 gap-2">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-2">
           {(["EXPENSE", "INCOME", "RESERVE_TRANSFER"] as TransactionType[]).map((t) => (
             <button
               key={t}
@@ -299,7 +299,7 @@ export default function TransactionsPage() {
   return (
     <div className="space-y-5 animate-fade-in-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div>
           <h1 className="text-lg font-bold text-[#F8FAFC] tracking-wide uppercase">Transactions</h1>
           <div className="text-xs text-[#64748B] mt-0.5">{total} records</div>
@@ -311,7 +311,7 @@ export default function TransactionsPage() {
 
       {/* Filters */}
       <div className="card">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
           <div className="relative">
             <Search size={13} className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]" />
             <input

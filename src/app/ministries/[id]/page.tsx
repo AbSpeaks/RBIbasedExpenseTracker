@@ -55,7 +55,7 @@ export default function MinistryDetailPage({ params }: { params: Promise<{ id: s
       {/* Header */}
       <div className="card">
         <div className="flex items-center gap-4 mb-4">
-          <span className="text-4xl">{analysis.ministry.icon}</span>
+          <span className="text-3xl md:text-4xl">{analysis.ministry.icon}</span>
           <div>
             <h1 className="text-xl font-bold text-[#F8FAFC]">{analysis.ministry.name.toUpperCase()} MINISTRY</h1>
             <div className={`badge-${analysis.status === "SAFE" ? "safe" : analysis.status === "WATCH" ? "watch" : "risk"} inline-block mt-1`}>
@@ -74,7 +74,7 @@ export default function MinistryDetailPage({ params }: { params: Promise<{ id: s
         </div>
 
         {/* Stats grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
           <div className="card-sm">
             <div className="text-[10px] text-[#64748B] mb-1">MONTHLY BUDGET</div>
             <div className="text-lg font-bold text-[#F8FAFC]">{fmt(analysis.budget)}</div>

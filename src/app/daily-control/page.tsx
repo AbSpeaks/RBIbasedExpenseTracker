@@ -56,7 +56,7 @@ export default function DailyControlPage() {
         <div className="flex items-center gap-6 mb-5">
           <div>
             <div className="text-[11px] text-[#64748B] mb-1">SAFE DAILY LIMIT</div>
-            <div className="text-5xl font-mono font-bold" style={{ color: statusColor, letterSpacing: "-0.03em" }}>
+            <div className="text-4xl md:text-5xl font-mono font-bold" style={{ color: statusColor, letterSpacing: "-0.03em" }}>
               {safeToSpend ? fmt(safeToSpend.safeAmount) : "—"}
             </div>
           </div>
@@ -77,7 +77,7 @@ export default function DailyControlPage() {
           </div>
         </div>
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
           <div className="card-sm">
             <div className="text-[10px] text-[#64748B] mb-1">TODAY SPENT</div>
             <div className="text-xl font-bold text-[#EF4444]">{safeToSpend ? fmt(safeToSpend.todaySpent) : "₹0"}</div>
@@ -160,7 +160,7 @@ export default function DailyControlPage() {
             <Clock size={14} color={runway.status === "SAFE" ? "#10B981" : runway.status === "WARNING" ? "#D4AF37" : "#EF4444"} />
             <span className="stat-label">CASH RUNWAY ANALYSIS</span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
             <div>
               <div className="text-[10px] text-[#64748B] mb-1">RUNWAY</div>
               <div className="text-2xl font-mono font-bold" style={{

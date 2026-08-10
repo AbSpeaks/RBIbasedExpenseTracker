@@ -119,7 +119,7 @@ export default function MinistriesPage() {
 
   return (
     <div className="space-y-5 animate-fade-in-up">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div>
           <h1 className="text-lg font-bold text-[#F8FAFC] tracking-wide uppercase">Ministries</h1>
           <div className="text-xs text-[#64748B] mt-0.5">{analyses.length} active ministries</div>
@@ -139,7 +139,7 @@ export default function MinistriesPage() {
       </div>
 
       {/* Summary */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div className="card text-center">
           <div className="stat-label mb-1">TOTAL BUDGET</div>
           <div className="text-xl font-bold text-[#F8FAFC]">{fmt(totalBudget)}</div>
@@ -185,7 +185,7 @@ export default function MinistriesPage() {
               </div>
 
               {/* Stats */}
-              <div className="grid grid-cols-3 gap-2 mb-3">
+              <div className="grid grid-cols-1 md:grid-cols-3 gap-2 mb-3">
                 <div>
                   <div className="text-[10px] text-[#64748B]">Budget</div>
                   <div className="text-sm font-semibold text-[#F8FAFC] font-mono">{fmt(m.budget)}</div>
@@ -200,7 +200,7 @@ export default function MinistriesPage() {
                 </div>
               </div>
 
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
                 <div className="flex items-center gap-3">
                   <span className="text-[10px] text-[#64748B]">{m.percentUsed.toFixed(0)}% used</span>
                   <span className={`text-[10px] font-semibold ${

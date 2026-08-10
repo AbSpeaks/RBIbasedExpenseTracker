@@ -85,7 +85,7 @@ function GoalForm({
         <input type="text" className="input-field" placeholder="e.g. Operation ₹80K" value={form.name} onChange={e => set("name", e.target.value)} />
         {errors.name && <div className="text-xs text-[#EF4444] mt-1">{errors.name}</div>}
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="stat-label block mb-2">TARGET AMOUNT</label>
           <div className="relative">
@@ -102,7 +102,7 @@ function GoalForm({
           </div>
         </div>
       </div>
-      <div className="grid grid-cols-2 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
         <div>
           <label className="stat-label block mb-2">TARGET DATE</label>
           <input type="date" className="input-field" value={form.targetDate} onChange={e => set("targetDate", e.target.value)} />
@@ -205,7 +205,7 @@ export default function GoalsPage() {
 
   return (
     <div className="space-y-5 animate-fade-in-up">
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div>
           <h1 className="text-lg font-bold text-[#F8FAFC] tracking-wide uppercase">Financial Goals</h1>
           <div className="text-xs text-[#64748B] mt-0.5">{allGoals.length} goals configured</div>
@@ -260,7 +260,7 @@ export default function GoalsPage() {
                   <div className="progress-fill h-2" style={{ width: `${pct}%`, background: `linear-gradient(90deg, ${statusColor}, #1E3A8A)` }} />
                 </div>
 
-                <div className="grid grid-cols-2 gap-3 mb-3">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
                   <div>
                     <div className="text-[10px] text-[#64748B]">Current</div>
                     <div className="font-bold text-[#D4AF37]">{fmt(goal.currentAmount)}</div>

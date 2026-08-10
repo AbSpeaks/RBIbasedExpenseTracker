@@ -59,7 +59,7 @@ export default function IntelligencePage() {
       </div>
 
       {/* Summary cards */}
-      <div className="grid grid-cols-2 md:grid-cols-4 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
         <div className="card text-center">
           <div className="stat-label mb-1">TOTAL ALERTS</div>
           <div className="text-2xl font-mono font-bold text-[#F8FAFC]">{alerts.length}</div>

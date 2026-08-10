@@ -79,7 +79,7 @@ function SafeToSpendWidget({ data }: { data: { safeAmount: number; todaySpent: n
       </div>
 
       {/* Main number */}
-      <div className="text-4xl font-mono font-bold mb-1" style={{ color: statusColor, letterSpacing: "-0.03em" }}>
+      <div className="text-3xl md:text-4xl font-mono font-bold mb-1" style={{ color: statusColor, letterSpacing: "-0.03em" }}>
         {fmt(data.safeAmount)}
       </div>
       <div className="text-[11px] text-[#64748B] mb-4">per day · operational allowance</div>
@@ -96,7 +96,7 @@ function SafeToSpendWidget({ data }: { data: { safeAmount: number; todaySpent: n
       </div>
 
       {/* Stats row */}
-      <div className="grid grid-cols-3 gap-3">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         <div>
           <div className="text-[11px] text-[#64748B] mb-1">Today Spent</div>
           <div className="text-base font-bold text-[#EF4444]">{fmt(data.todaySpent)}</div>
@@ -143,7 +143,7 @@ function FiscalHealthCard({ health }: { health: { total: number; level: string; 
       </div>
 
       <div className="flex items-end gap-3 mb-4">
-        <div className="text-5xl font-mono font-bold" style={{ color: levelColor, letterSpacing: "-0.03em" }}>
+        <div className="text-4xl md:text-5xl font-mono font-bold" style={{ color: levelColor, letterSpacing: "-0.03em" }}>
           {health.total}
         </div>
         <div className="mb-2">
@@ -295,7 +295,7 @@ export default function DashboardPage() {
   return (
     <div className="space-y-6 animate-fade-in-up">
       {/* Header */}
-      <div className="flex items-center justify-between">
+      <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
         <div>
           <div className="flex items-center gap-2 mb-1">
             <span className="text-xl">🏛️</span>
@@ -318,7 +318,7 @@ export default function DashboardPage() {
       </div>
 
       {/* KPI Cards */}
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-3">
         <KPICard
           label="CURRENT CASH" value={fmt(currentCash)}
           trend={currentCash >= 0 ? "Available" : "Deficit"}
@@ -380,7 +380,7 @@ export default function DashboardPage() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mb-4">
             <div>
               <div className="text-xs text-[#64748B] mb-1">Current</div>
               <div className="text-xl font-bold text-[#D4AF37]">{fmt(primaryGoal.goal?.currentAmount ?? 0)}</div>

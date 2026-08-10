@@ -81,7 +81,7 @@ export default function ReserveBankPage() {
         </div>
 
         {/* KPIs */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mt-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 mt-4">
           <div className="card-sm">
             <div className="text-[10px] text-[#64748B] mb-1">TARGET</div>
             <div className="text-lg font-bold text-[#F8FAFC]">{fmt(targetAmount)}</div>

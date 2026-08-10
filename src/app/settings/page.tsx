@@ -97,7 +97,7 @@ export default function SettingsPage() {
             <label className="stat-label block mb-2">NAME</label>
             <input type="text" className="input-field" value={uv.name as string ?? ""} onChange={e => setU("name", e.target.value)} />
           </div>
-          <div className="grid grid-cols-2 gap-3">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
             <div>
               <label className="stat-label block mb-2">MONTHLY INCOME</label>
               <div className="relative">
@@ -147,7 +147,7 @@ export default function SettingsPage() {
           <Shield size={16} color="#D4AF37" />
           <span className="stat-label">TREASURY POLICIES</span>
         </div>
-        <div className="grid grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
           {[
             { key: "reserveTarget", label: "Reserve Target" },
             { key: "minimumSavingsRate", label: "Min Savings Rate (%)" },
