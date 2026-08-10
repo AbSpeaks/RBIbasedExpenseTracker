@@ -72,9 +72,75 @@ function EditBudgetModal({
   );
 }
 
+function CreateMinistryModal({
+  onClose, onSave
+}: {
+  onClose: () => void;
+  onSave: (data: Partial<Ministry>) => void;
+}) {
+  const [name, setName] = useState("");
+  const [icon, setIcon] = useState("💼");
+  const [budget, setBudget] = useState("");
+
+  return (
+    <Modal open title="Create New Ministry" onClose={onClose}>
+      <div className="space-y-4">
+        <div>
+          <label className="stat-label block mb-2">MINISTRY NAME</label>
+          <input
+            type="text"
+            className="input-field"
+            placeholder="e.g. Ministry of Food"
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            autoFocus
+          />
+        </div>
+        <div className="grid grid-cols-2 gap-3">
+          <div>
+            <label className="stat-label block mb-2">ICON (EMOJI)</label>
+            <input
+              type="text"
+              className="input-field text-center text-xl"
+              value={icon}
+              onChange={(e) => setIcon(e.target.value)}
+              maxLength={2}
+            />
+          </div>
+          <div>
+            <label className="stat-label block mb-2">MONTHLY BUDGET</label>
+            <div className="relative">
+              <span className="absolute left-3 top-1/2 -translate-y-1/2 text-[#64748B]">₹</span>
+              <input
+                type="number"
+                min="0"
+                className="input-field pl-7"
+                placeholder="0"
+                value={budget}
+                onChange={(e) => setBudget(e.target.value)}
+              />
+            </div>
+          </div>
+        </div>
+        <div className="flex gap-3 mt-2">
+          <button
+            onClick={() => onSave({ name, icon, monthlyBudget: parseFloat(budget) || 0, priority: "essential", color: "#1E3A8A" })}
+            className="btn-primary flex-1"
+            disabled={!name}
+          >
+            Create Ministry
+          </button>
+          <button onClick={onClose} className="btn-ghost">Cancel</button>
+        </div>
+      </div>
+    </Modal>
+  );
+}
+
 export default function MinistriesPage() {
   const { toast } = useToast();
   const [editMinistry, setEditMinistry] = useState<Ministry | null>(null);
+  const [isCreating, setIsCreating] = useState(false);
   const [sortBy, setSortBy] = useState<"name" | "spent" | "budget" | "status">("status");
 
   const { data: dashData, mutate: mutateDash } = useSWR("/api/dashboard", fetcher);
@@ -104,6 +170,23 @@ export default function MinistriesPage() {
     }
   };
 
+  const handleCreateMinistry = async (data: Partial<Ministry>) => {
+    try {
+      const res = await fetch("/api/ministries", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+      if (!res.ok) { toast("error", "Failed to create ministry"); return; }
+      toast("success", "Ministry created successfully");
+      setIsCreating(false);
+      mutateMin();
+      mutateDash();
+    } catch {
+      toast("error", "Network error");
+    }
+  };
+
   const sorted = [...analyses].sort((a, b) => {
     if (sortBy === "spent") return b.spent - a.spent;
     if (sortBy === "budget") return b.budget - a.budget;
@@ -124,9 +207,9 @@ export default function MinistriesPage() {
           <h1 className="text-lg font-bold text-[#F8FAFC] tracking-wide uppercase">Ministries</h1>
           <div className="text-xs text-[#64748B] mt-0.5">{analyses.length} active ministries</div>
         </div>
-        <div className="flex gap-2">
+        <div className="flex items-center gap-2 w-full md:w-auto">
           <select
-            className="input-field text-xs w-36"
+            className="input-field text-xs w-full md:w-36"
             value={sortBy}
             onChange={(e) => setSortBy(e.target.value as typeof sortBy)}
           >
@@ -135,6 +218,12 @@ export default function MinistriesPage() {
             <option value="budget">Sort: Budget</option>
             <option value="name">Sort: Name</option>
           </select>
+          <button 
+            onClick={() => setIsCreating(true)}
+            className="btn-primary flex items-center justify-center gap-1 text-xs whitespace-nowrap h-[38px] px-3"
+          >
+            <Plus size={14} /> New
+          </button>
         </div>
       </div>
 
@@ -240,6 +329,13 @@ export default function MinistriesPage() {
           ministry={editMinistry}
           onClose={() => setEditMinistry(null)}
           onSave={handleSaveBudget}
+        />
+      )}
+
+      {isCreating && (
+        <CreateMinistryModal
+          onClose={() => setIsCreating(false)}
+          onSave={handleCreateMinistry}
         />
       )}
     </div>
