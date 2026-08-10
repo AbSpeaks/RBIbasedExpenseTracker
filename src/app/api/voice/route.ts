@@ -2,18 +2,9 @@ import { NextResponse, NextRequest } from "next/server";
 import connectDB from "@/lib/db";
 import { Ministry } from "@/models/Ministry";
 import { Transaction } from "@/models/Transaction";
-import OpenAI from "openai";
-
-const openai = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY || "dummy", // Allow it to initialize, but it will throw on API call if dummy
-});
 
 export async function POST(request: NextRequest) {
   try {
-    if (!process.env.OPENAI_API_KEY) {
-      return NextResponse.json({ error: "Missing OPENAI_API_KEY in environment variables." }, { status: 400 });
-    }
-
     const { text } = await request.json();
     if (!text) {
       return NextResponse.json({ error: "No voice text provided" }, { status: 400 });
@@ -21,62 +12,94 @@ export async function POST(request: NextRequest) {
 
     await connectDB();
     
-    // Fetch ministries to give context to the AI
+    // Fetch ministries to give context to the parser
     const ministries = await Ministry.find({ active: true }).lean();
-    const ministryContext = ministries.map(m => `- ID: ${m._id.toString()} | Name: ${m.name}`).join("\n");
+    if (ministries.length === 0) {
+       return NextResponse.json({ error: "You must create at least one Ministry first." }, { status: 400 });
+    }
 
-    const systemPrompt = `
-You are a highly precise financial assistant for the 'Reserve Bank of Abin'.
-The user will provide a transcribed voice message of a financial transaction.
-You must extract the information and return a strict JSON object.
+    const lowerText = text.toLowerCase();
 
-Available Ministries (Categories):
-${ministryContext}
+    // 1. Extract Amount
+    const amountMatch = text.match(/\b\d+(?:,\d{3})*(?:\.\d{1,2})?\b/);
+    if (!amountMatch) {
+      return NextResponse.json({ error: "Could not detect an amount. Say something like 'Spent 500 on lunch'." }, { status: 400 });
+    }
+    const amount = parseFloat(amountMatch[0].replace(/,/g, ''));
 
-JSON Schema:
-{
-  "amount": number (positive integer/float),
-  "description": string (short, clean description, e.g., 'Lunch at Cafe'),
-  "type": "EXPENSE" | "INCOME",
-  "ministryId": string (The exact ID from the list above that best fits this transaction)
-}
+    // 2. Determine Type
+    const incomeKeywords = ["got", "received", "earned", "income", "salary", "won", "credited"];
+    const isIncome = incomeKeywords.some(w => lowerText.includes(w)) && !lowerText.includes("spent");
+    const type = isIncome ? "INCOME" : "EXPENSE";
 
-Rules:
-- If it's a purchase/spending, set type to "EXPENSE".
-- If it's receiving money, set type to "INCOME".
-- If no ministry perfectly fits, pick the closest match or the most generic one.
-- DO NOT wrap the JSON in markdown blocks like \`\`\`json. Return raw JSON.
-`;
+    // 3. Determine Ministry Category (Heuristic Matching)
+    let ministryId = ministries[0]._id; // Default fallback
+    let foundMatch = false;
 
-    const response = await openai.chat.completions.create({
-      model: "gpt-4o-mini", // fast, cheap, and very smart
-      response_format: { type: "json_object" },
-      messages: [
-        { role: "system", content: systemPrompt },
-        { role: "user", content: text }
-      ],
-      temperature: 0,
-    });
+    // Direct match with ministry name
+    for (const m of ministries) {
+      if (lowerText.includes(m.name.toLowerCase())) {
+        ministryId = m._id;
+        foundMatch = true;
+        break;
+      }
+    }
 
-    const resultText = response.choices[0].message.content;
-    if (!resultText) throw new Error("No response from OpenAI");
+    // Fuzzy keyword matching if direct name fails
+    if (!foundMatch) {
+      const categoryKeywords: Record<string, string[]> = {
+        "food": ["lunch", "dinner", "breakfast", "groceries", "restaurant", "cafe", "coffee", "snack", "eat", "swiggy", "zomato"],
+        "transport": ["fuel", "gas", "petrol", "uber", "taxi", "bus", "train", "flight", "car", "ola", "auto", "metro"],
+        "housing": ["rent", "electricity", "water", "wifi", "internet", "maintenance", "bill", "home"],
+        "entertainment": ["movie", "game", "netflix", "party", "club", "concert", "fun", "amazon prime"],
+        "health": ["doctor", "medicine", "pharmacy", "hospital", "clinic", "medical"],
+        "education": ["book", "course", "school", "college", "tuition", "fee"]
+      };
 
-    const parsedData = JSON.parse(resultText);
+      for (const [cat, words] of Object.entries(categoryKeywords)) {
+        if (words.some(w => lowerText.includes(w))) {
+          // Find a ministry that loosely matches this category concept
+          const matchedMin = ministries.find(m => m.name.toLowerCase().includes(cat) || m.name.toLowerCase().includes("misc"));
+          if (matchedMin) {
+            ministryId = matchedMin._id;
+            foundMatch = true;
+            break;
+          }
+        }
+      }
+    }
+
+    // 4. Clean up description
+    let description = text.replace(amountMatch[0], "").trim();
+    // Remove filler words
+    const fillers = [/^i spent/i, /^spent/i, /^i bought/i, /^bought/i, /^paid/i, /^got/i, /^received/i, /rupees/i, /dollars/i, /^on/i, /^for/i];
+    for (const regex of fillers) {
+      description = description.replace(regex, "").trim();
+    }
+    // Capitalize first letter
+    if (description.length > 0) {
+      description = description.charAt(0).toUpperCase() + description.slice(1);
+    } else {
+      description = isIncome ? "Income" : "Expense";
+    }
+
+    // Truncate if too long
+    if (description.length > 40) description = description.substring(0, 40) + "...";
 
     // Create the transaction
     const transaction = await Transaction.create({
-      amount: parsedData.amount,
-      description: parsedData.description,
-      type: parsedData.type,
-      ministryId: parsedData.ministryId,
+      amount,
+      description,
+      type,
+      ministryId,
       date: new Date(),
     });
 
     return NextResponse.json({ success: true, transaction });
   } catch (error: any) {
-    console.error("Voice AI Error:", error);
+    console.error("Local Voice Parser Error:", error);
     return NextResponse.json(
-      { error: error?.message || "Failed to process voice transaction." }, 
+      { error: "Failed to parse voice transaction locally." }, 
       { status: 500 }
     );
   }
