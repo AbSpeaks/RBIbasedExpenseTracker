@@ -41,7 +41,7 @@ export default function VoiceRecorder() {
           console.error("Speech recognition error", event.error);
           setIsRecording(false);
           if (event.error !== "no-speech") {
-            showToast(`Voice Error: ${event.error}`, "error");
+            showToast("error", `Voice Error: ${event.error}`);
           }
         };
 
@@ -66,13 +66,13 @@ export default function VoiceRecorder() {
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to process voice transaction");
 
-      showToast(`Added: ${data.transaction.description} (₹${data.transaction.amount})`, "success");
+      showToast("success", `Added: ${data.transaction.description} (₹${data.transaction.amount})`);
       
       // Attempt to refresh the page/data globally (simple reload for now to reflect new data)
       setTimeout(() => window.location.reload(), 1500);
       
     } catch (err: any) {
-      showToast(err.message, "error");
+      showToast("error", err.message);
     } finally {
       setIsProcessing(false);
     }
@@ -80,7 +80,7 @@ export default function VoiceRecorder() {
 
   const toggleRecording = () => {
     if (!isSupported) {
-      showToast("Voice recognition is not supported in this browser.", "error");
+      showToast("error", "Voice recognition is not supported in this browser.");
       return;
     }
 
