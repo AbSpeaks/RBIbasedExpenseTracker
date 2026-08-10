@@ -128,7 +128,7 @@ export default function ReportsPage() {
         <div className="px-5 py-4 border-b" style={{ borderColor: "rgba(255,255,255,0.06)" }}>
           <div className="stat-label">MONTHLY SUMMARY TABLE</div>
         </div>
-        <div className="overflow-x-auto">
+        <div className="overflow-x-auto hidden md:block">
           <table className="data-table">
             <thead>
               <tr>
@@ -164,6 +164,42 @@ export default function ReportsPage() {
               )}
             </tbody>
           </table>
+        </div>
+
+        {/* Mobile Card View */}
+        <div className="md:hidden flex flex-col divide-y divide-[#1E2D4A]/50">
+          {allReports.map((r) => (
+            <div key={r.month} className="p-4 flex flex-col gap-3">
+              <div className="flex justify-between items-center">
+                <span className="font-medium text-[#F8FAFC]">{r.label}</span>
+                <span className={r.savings === 0 ? "badge-neutral" : `badge-${r.surplus ? "safe" : "risk"}`}>
+                  {r.savings === 0 ? "NEUTRAL" : r.surplus ? "SURPLUS" : "DEFICIT"}
+                </span>
+              </div>
+              
+              <div className="grid grid-cols-2 gap-x-2 gap-y-3 text-[11px]">
+                <div>
+                  <div className="text-[#64748B] mb-0.5 uppercase tracking-wider">Income</div>
+                  <div className="font-mono text-[#10B981] text-sm">{fmt(r.income)}</div>
+                </div>
+                <div>
+                  <div className="text-[#64748B] mb-0.5 uppercase tracking-wider">Expenses</div>
+                  <div className="font-mono text-[#EF4444] text-sm">{fmt(r.expenses)}</div>
+                </div>
+                <div>
+                  <div className="text-[#64748B] mb-0.5 uppercase tracking-wider">Savings ({r.savingsRate}%)</div>
+                  <div className={`font-mono font-semibold text-sm ${r.savings === 0 ? "text-[#94A3B8]" : r.surplus ? "text-[#10B981]" : "text-[#EF4444]"}`}>{fmt(r.savings)}</div>
+                </div>
+                <div>
+                  <div className="text-[#64748B] mb-0.5 uppercase tracking-wider">Reserve</div>
+                  <div className="font-mono text-[#D4AF37] text-sm">{fmt(r.reserveContribution)}</div>
+                </div>
+              </div>
+            </div>
+          ))}
+          {allReports.length === 0 && (
+            <div className="p-6 text-center text-[#64748B] text-sm">No historical data available</div>
+          )}
         </div>
       </div>
     </div>
