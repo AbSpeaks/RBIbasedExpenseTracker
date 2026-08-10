@@ -50,14 +50,14 @@ export default function ReportsPage() {
 
       {/* Current month summary */}
       {currentMonth && (
-        <div className={`card ${currentMonth.surplus ? "border-[#10B981]/30" : "border-[#EF4444]/30"}`}
-          style={{ background: currentMonth.surplus ? "rgba(61,220,151,0.04)" : "rgba(255,107,107,0.04)" }}>
+        <div className={`card ${currentMonth.savings === 0 ? "border-[#94A3B8]/30" : currentMonth.surplus ? "border-[#10B981]/30" : "border-[#EF4444]/30"}`}
+          style={{ background: currentMonth.savings === 0 ? "rgba(148,163,184,0.04)" : currentMonth.surplus ? "rgba(61,220,151,0.04)" : "rgba(255,107,107,0.04)" }}>
           <div className="flex items-center gap-3 mb-4">
-            {currentMonth.surplus ? <TrendingUp size={20} color="#10B981" /> : <TrendingDown size={20} color="#EF4444" />}
+            {currentMonth.savings === 0 ? <TrendingUp size={20} color="#94A3B8" className="opacity-50" /> : currentMonth.surplus ? <TrendingUp size={20} color="#10B981" /> : <TrendingDown size={20} color="#EF4444" />}
             <div>
               <div className="stat-label">CURRENT MONTH: {currentMonth.label.toUpperCase()}</div>
-              <div className={`text-2xl font-mono font-bold ${currentMonth.surplus ? "text-[#10B981]" : "text-[#EF4444]"}`}>
-                {currentMonth.surplus ? "🟢 SURPLUS" : "🔴 DEFICIT"} {fmt(Math.abs(currentMonth.savings))}
+              <div className={`text-2xl font-mono font-bold ${currentMonth.savings === 0 ? "text-[#94A3B8]" : currentMonth.surplus ? "text-[#10B981]" : "text-[#EF4444]"}`}>
+                {currentMonth.savings === 0 ? "⚪ NEUTRAL" : currentMonth.surplus ? "🟢 SURPLUS" : "🔴 DEFICIT"} {fmt(Math.abs(currentMonth.savings))}
               </div>
             </div>
           </div>
@@ -65,7 +65,7 @@ export default function ReportsPage() {
             {[
               { label: "INCOME", value: currentMonth.income, color: "#10B981" },
               { label: "EXPENSES", value: currentMonth.expenses, color: "#EF4444" },
-              { label: "SAVINGS", value: currentMonth.savings, color: currentMonth.surplus ? "#10B981" : "#EF4444" },
+              { label: "SAVINGS", value: currentMonth.savings, color: currentMonth.savings === 0 ? "#94A3B8" : currentMonth.surplus ? "#10B981" : "#EF4444" },
               { label: "RESERVE TRANSFER", value: currentMonth.reserveContribution, color: "#D4AF37" },
               { label: "SAVINGS RATE", value: parseFloat(currentMonth.savingsRate), color: "#1E3A8A", isPercent: true },
             ].map((item) => (
@@ -147,12 +147,12 @@ export default function ReportsPage() {
                   <td className="font-medium text-[#F8FAFC]">{r.label}</td>
                   <td className="text-right font-mono text-[#10B981]">{fmt(r.income)}</td>
                   <td className="text-right font-mono text-[#EF4444]">{fmt(r.expenses)}</td>
-                  <td className={`text-right font-mono font-semibold ${r.surplus ? "text-[#10B981]" : "text-[#EF4444]"}`}>{fmt(r.savings)}</td>
+                  <td className={`text-right font-mono font-semibold ${r.savings === 0 ? "text-[#94A3B8]" : r.surplus ? "text-[#10B981]" : "text-[#EF4444]"}`}>{fmt(r.savings)}</td>
                   <td className="text-right font-mono text-[#D4AF37]">{fmt(r.reserveContribution)}</td>
                   <td className="text-right font-mono">{r.savingsRate}%</td>
                   <td className="text-center">
-                    <span className={`badge-${r.surplus ? "safe" : "risk"}`}>
-                      {r.surplus ? "SURPLUS" : "DEFICIT"}
+                    <span className={r.savings === 0 ? "badge-neutral" : `badge-${r.surplus ? "safe" : "risk"}`}>
+                      {r.savings === 0 ? "NEUTRAL" : r.surplus ? "SURPLUS" : "DEFICIT"}
                     </span>
                   </td>
                 </tr>
