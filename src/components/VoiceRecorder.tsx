@@ -16,7 +16,7 @@ export default function VoiceRecorder() {
   const [isProcessing, setIsProcessing] = useState(false);
   const [isSupported, setIsSupported] = useState(true);
   const recognitionRef = useRef<any>(null);
-  const { showToast } = useToast();
+  const { toast: showToast } = useToast();
 
   useEffect(() => {
     if (typeof window !== "undefined") {
