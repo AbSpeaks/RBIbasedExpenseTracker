@@ -49,10 +49,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <ToastProvider>
           <div className="flex min-h-screen">
             <Sidebar />
-            <main
-              className="main-content flex-1 min-h-screen pb-20 md:pb-6 md:ml-56 p-3 md:p-6"
-              className="p-3 md:p-6"
-            >
+            <main className="main-content flex-1 min-h-screen pb-20 md:pb-6 md:ml-56 p-3 md:p-6">
               <div className="max-w-7xl mx-auto">{children}</div>
             </main>
           </div>
