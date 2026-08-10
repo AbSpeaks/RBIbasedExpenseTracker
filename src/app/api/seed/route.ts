@@ -9,7 +9,7 @@ import { FinancialPolicy } from "@/models/FinancialPolicy";
 import { Budget } from "@/models/Budget";
 import { Asset, Liability } from "@/models/NetWorth";
 
-export async function POST() {
+export async function GET() {
   try {
     await connectDB();
 
